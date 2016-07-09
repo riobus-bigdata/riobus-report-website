@@ -1,16 +1,63 @@
 <div layout="column" flex>
-<ng-map default-style="true"
-        center="-22.912534, -43.192880"
-        zoom="13">
-  <shape name="rectangle"
-         editable="true"
-         draggable="true"
-         bounds="[[-22.92, -43.18],[-22.93, -43.17]]"
-         on-bounds_changed="$ctrl.boundsChanged()">
-  </shape>
-</ng-map>
+  <md-toolbar md-whiteframe="2">
+    <div class="md-toolbar-tools">
+      <h2>Rio Bus</h2>
+    </div>
+  </md-toolbar>
 
-<md-card flex>
-  {{$ctrl.ne}} {{$ctrl.sw}}
-</md-card>
+  <div flex layout="row">
+    <div flex layout="column">
+      <md-card>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Filter</span>
+            <span class="md-subhead">Large</span>
+          </md-card-title-text>
+        </md-card-title>
+        <div flex layout="column" layout-margin>
+          <md-radio-group ng-model="$ctrl.filter.type" flex layout="row">
+            <md-radio-button value="Limit">Speed Limit</md-radio-button>
+            <md-radio-button value="Lines">Bus Lines</md-radio-button>
+            <md-radio-button value="Average">Average Speed</md-radio-button>
+          </md-radio-group>
+          <div flex layout="row">
+            <md-input-container ng-show="$ctrl.filter.type === 'Limit'" class="md-block">
+              <input ng-model="$ctrl.filter.speed" type="number" placeholder="Speed" ng-required="$ctrl.filter.type === 'Limit'">
+            </md-input-container>
+            <md-datepicker ng-model="$ctrl.filter.dateBegin" md-placeholder="Start Date">
+            </md-datepicker>
+            <md-datepicker ng-model="$ctrl.filter.dateEnd" md-placeholder="End Date">
+            </md-datepicker>
+          </div>
+          <md-button flex class="md-primary md-raised" ng-click="$ctrl.search()">
+            Search
+          </md-button>
+        </div>
+      </md-card>
+      <div flex layout="row">
+        <div flex layout="column" layout-padding>
+          <ng-map center="-22.912534, -43.192880"
+                  zoom="13"
+                  id="map"
+                  flex>
+            <shape name="rectangle"
+                   editable="true"
+                   draggable="true"
+                   bounds="[[-22.92, -43.18],[-22.93, -43.17]]"
+                   on-bounds_changed="$ctrl.boundsChanged()">
+            </shape>
+          </ng-map>
+        </div>
+      </div>
+    </div>
+    <div flex layout="column">
+      <md-card flex>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Results</span>
+          </md-card-title-text>
+        </md-card-title>
+      </md-card>
+    </div>
+  </div>
 </div>

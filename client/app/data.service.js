@@ -1,21 +1,23 @@
 class DataService {
-  constructor($http) {
-    this.$http = $http;
+  constructor($resource) {
+    this.$resource = $resource;
   }
   getSpeedLimit(filter) {
-    return this.$http.get('/speedLimit/:dateBegin/:dateEnd/:lat1/:lng1/:lat2/:lng2/:speed/:returnLength', filter)
-      .then(response => response.data);
+    filter.returnLength = 100;
+    return this.$resource('/speedLimit/:dateBegin/:dateEnd/:lat1/:lng1/:lat2/:lng2/:speed/:returnLength', filter)
+               .query().$promise
+               .then(response => response);
   }
   getBusCount(filter) {
-    return this.$http.get('/busLineCount/:dateBegin/:dateEnd', filter)
-      .then(response => response.data);
+    return this.$resource('/busLineCount/:dateBegin/:dateEnd', filter).query().$promise
+      .then(response => response);
   }
   getAverageSpeed(filter) {
-    return this.$http.get('/averagespeed/:dateBegin/:dateEnd/:lat1/:lng1/:lat2/:lng2', filter)
-      .then(response => response.data);
+    return this.$resource('/averagespeed/:dateBegin/:dateEnd/:lat1/:lng1/:lat2/:lng2', filter).query().$promise
+      .then(response => response);
   }
 }
 
-DataService.$inject = ['$http'];
+DataService.$inject = ['$resource'];
 
 export default DataService;
