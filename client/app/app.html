@@ -1,1 +1,16 @@
-asd
+<div layout="column" flex>
+<ng-map default-style="true"
+        center="-22.912534, -43.192880"
+        zoom="13">
+  <shape name="rectangle"
+         editable="true"
+         draggable="true"
+         bounds="[[-22.92, -43.18],[-22.93, -43.17]]"
+         on-bounds_changed="$ctrl.boundsChanged()">
+  </shape>
+</ng-map>
+
+<md-card flex>
+  {{$ctrl.ne}} {{$ctrl.sw}}
+</md-card>
+</div>
