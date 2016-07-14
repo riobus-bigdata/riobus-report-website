@@ -7,33 +7,6 @@
 
   <div flex layout="row">
     <div flex layout="column">
-      <md-card>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">Filter</span>
-            <span class="md-subhead">Large</span>
-          </md-card-title-text>
-        </md-card-title>
-        <div flex layout="column" layout-margin>
-          <md-radio-group ng-model="$ctrl.filter.type" flex layout="row">
-            <md-radio-button value="Limit">Speed Limit</md-radio-button>
-            <md-radio-button value="Lines">Bus Lines</md-radio-button>
-            <md-radio-button value="Average">Average Speed</md-radio-button>
-          </md-radio-group>
-          <div flex layout="row">
-            <md-input-container ng-show="$ctrl.filter.type === 'Limit'" class="md-block">
-              <input ng-model="$ctrl.filter.speed" type="number" placeholder="Speed" ng-required="$ctrl.filter.type === 'Limit'">
-            </md-input-container>
-            <md-datepicker ng-model="$ctrl.filter.dateBegin" md-placeholder="Start Date">
-            </md-datepicker>
-            <md-datepicker ng-model="$ctrl.filter.dateEnd" md-placeholder="End Date">
-            </md-datepicker>
-          </div>
-          <md-button flex class="md-primary md-raised" ng-click="$ctrl.search()">
-            Search
-          </md-button>
-        </div>
-      </md-card>
       <div flex layout="row">
         <div flex layout="column" layout-padding>
           <ng-map center="-22.912534, -43.192880"
@@ -49,14 +22,47 @@
           </ng-map>
         </div>
       </div>
+      <md-card>
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline">Filter</span>
+          </md-card-title-text>
+        </md-card-title>
+        <div flex layout="column" layout-margin>
+          <md-radio-group ng-model="$ctrl.filter.type" flex layout="row" ng-disabled="$ctrl.loading">
+            <md-radio-button value="Limit">Speed Limit</md-radio-button>
+            <md-radio-button value="Lines">Bus Lines</md-radio-button>
+            <md-radio-button value="Average">Average Speed</md-radio-button>
+          </md-radio-group>
+          <div flex layout="row">
+            <md-input-container ng-show="$ctrl.filter.type === 'Limit'" class="md-block">
+              <input ng-model="$ctrl.filter.speed" type="number" placeholder="Speed" ng-required="$ctrl.filter.type === 'Limit'" ng-disabled="$ctrl.loading">
+            </md-input-container>
+            <md-datepicker ng-model="$ctrl.filter.$dateBegin" md-placeholder="Start Date" ng-disabled="$ctrl.loading">
+            </md-datepicker>
+            <md-datepicker ng-model="$ctrl.filter.$dateEnd" md-placeholder="End Date" ng-disabled="$ctrl.loading">
+            </md-datepicker>
+          </div>
+          <md-button flex class="md-primary md-raised" ng-click="$ctrl.search()" ng-disabled="$ctrl.loading">
+            Search
+          </md-button>
+        </div>
+      </md-card>
     </div>
     <div flex layout="column">
       <md-card flex>
-        <md-card-title>
-          <md-card-title-text>
-            <span class="md-headline">Results</span>
-          </md-card-title-text>
-        </md-card-title>
+        <md-card-content layout="row" layout-align="center center" flex>
+            <div layout="column" layout-align="center center" ng-hide="true">
+              <md-icon style="font-size: 60px;">search</md-icon>
+              <h4 class="md-headline">Select the filters and search</h4>
+            </div>
+            <div ng-show="vm.average">
+              <h3 class="md-display-1">Average speed</h3>
+              <h4 class="md-headline">{{vm.average}}</h4>
+            </div>
+            <div ng-show="vm.lines">
+            </div>
+          </md-card-content>
       </md-card>
     </div>
   </div>

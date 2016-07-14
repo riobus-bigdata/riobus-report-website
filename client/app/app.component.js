@@ -6,9 +6,9 @@ let appComponent = {
   controller: AppController
 };
 
-AppController.$inject = ['NgMap', 'data'];
+AppController.$inject = ['NgMap', 'data', '$mdToast'];
 
-function AppController(NgMap, data){
+function AppController(NgMap, data, $mdToast){
   var vm = this;
 
   vm.filter = {
@@ -18,8 +18,8 @@ function AppController(NgMap, data){
     lng1: '-43.18',
     lat2: '-22.93',
     lng2: '-43.17',
-    dateBegin: moment().format('YYYY-MM-DDTHH:mm:ss'),
-    dateEnd: moment().format('YYYY-MM-DDTHH:mm:ss')
+    $dateBegin: moment().toDate(),
+    $dateEnd: moment().toDate()
   };
 
   vm.search = search;
@@ -37,9 +37,14 @@ function AppController(NgMap, data){
   };
 
   function search() {
+    vm.average = undefined;
+    vm.linesCount = undefined;
+    vm.speedLimit = undefined;
+
+    vm.loading = true;
     // fixing dates formats
-    vm.filter.dateBegin = moment(vm.filter.dateBegin, 'L', true).format('YYYY-MM-DDTHH:mm:ss');
-    vm.filter.dateEnd = moment(vm.filter.dateEnd, 'L', true).format('YYYY-MM-DDTHH:mm:ss');
+    vm.filter.dateBegin = moment(vm.filter.$dateBegin, 'L', true).format('YYYY-MM-DDTHH:mm:ss');
+    vm.filter.dateEnd = moment(vm.filter.$dateEnd, 'L', true).format('YYYY-MM-DDTHH:mm:ss');
 
     var promise;
     switch (vm.filter.type){
@@ -59,7 +64,25 @@ function AppController(NgMap, data){
     }
 
     promise.then(result => {
-      console.log('result', result);
+      if(vm.filter.type === 'Limit'){
+
+      }
+
+      if(vm.filter.type === 'Lines'){
+        vm.linesCount = result.reduce((obj,val) => {
+          obj[val[0]] = val[1];
+          return obj;
+        }, {});
+      }
+
+      if(vm.filter.type === 'Average'){
+        vm.average = result.result;
+      }
+      vm.loading = false;
+    },
+    error => {
+      $mdToast.showSimple('Error!');
+      vm.loading = false;
     });
   }
 }
