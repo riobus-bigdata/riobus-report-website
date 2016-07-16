@@ -4,6 +4,5 @@
 node_modules
 .settings
 *.log
-dist/
 .idea
 npm-debug.log
