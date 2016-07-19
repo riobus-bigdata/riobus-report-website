@@ -9,16 +9,21 @@
     <div flex layout="column">
       <div flex layout="row">
         <div flex layout="column" layout-padding>
-          <ng-map center="-22.912534, -43.192880"
-                  zoom="13"
-                  id="map"
-                  flex>
-            <shape name="rectangle"
-                   editable="true"
-                   draggable="true"
-                   bounds="[[-22.92, -43.18],[-22.93, -43.17]]"
-                   on-bounds_changed="$ctrl.boundsChanged()">
+          <ng-map center="-22.912534, -43.192880" zoom="13" id="map" map-type-control="false" flex>
+            <shape name="rectangle" editable="true" draggable="true" bounds="[[-22.92, -43.18],[-22.93, -43.17]]" on-bounds_changed="$ctrl.boundsChanged()">
             </shape>
+            <marker ng-if="$ctrl.lines"
+                    ng-repeat="line in $ctrl.lines" 
+                    position="{{line.position}}" 
+                    on-click="$ctrl.showLine(event, line.id)">
+            </marker>
+            <info-window id="foo" ng-if="$ctrl.lines">
+              <div ng-non-bindable="">
+                <p>Linha: {{$ctrl.line.number}}</p>
+                <p>Velocidade: {{$ctrl.line.speed}}km/h</p>
+                <p>Data: {{$ctrl.line.date}}</p>
+              </div>
+            </info-window>
           </ng-map>
         </div>
       </div>
@@ -51,18 +56,55 @@
     </div>
     <div flex layout="column">
       <md-card flex>
-        <md-card-content layout="row" layout-align="center center" flex>
-            <div layout="column" layout-align="center center" ng-hide="true">
-              <md-icon style="font-size: 60px;">search</md-icon>
-              <h4 class="md-headline">Select the filters and search</h4>
-            </div>
-            <div ng-show="vm.average">
-              <h3 class="md-display-1">Average speed</h3>
-              <h4 class="md-headline">{{vm.average}}</h4>
-            </div>
-            <div ng-show="vm.lines">
-            </div>
-          </md-card-content>
+        <md-card-content flex layout="column">
+          <div layout="column">
+            <span class="md-headline">Resultados</span>
+            <span class="md-subhead">Utilize os filtros ao lado para fazer uma busca</span>
+          </div>
+          <div layout="row" layout-align="center center" flex ng-show="$ctrl.loading">
+            <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+          </div>
+          <div layout="column" layout-align="center center" ng-hide="true">
+            <md-icon style="font-size: 60px;">search</md-icon>
+            <h4 class="md-headline">Select the filters and search</h4>
+          </div>
+          <div ng-show="$ctrl.average" flex layout-align="center center" layout="column">
+            <md-icon style="font-size:50px;margin:0px;height:50px;width:50px;">slow_motion_video</md-icon>
+            <h4 class="md-headline">Velocidade Média: {{$ctrl.average}} km/h</h4>
+          </div>
+          <md-content ng-show="$ctrl.linesCount" style="margin-top:70px; background-color:white;">
+            <md-list>
+              <md-list-item class="md-2-line" ng-repeat="line in $ctrl.linesCount | orderBy: '-count'">
+                <md-icon class="md-avatar-icon">directions_bus</md-icon>
+                <div class="md-list-item-text">
+                  <h3> Linha: {{ line.number }} </h3>
+                  <p> Quantidade: {{ line.count }} </p>
+                </div>
+                <md-button class="md-secondary md-icon-button" ng-click="doSecondaryAction($event)" ng-if="phone.options.actionIcon" aria-label="call">
+                  <md-icon md-svg-icon="{{phone.options.actionIcon}}"></md-icon>
+                </md-button>
+              </md-list-item>
+            </md-list>
+          </md-content>
+          <md-content ng-show="$ctrl.lines" style="margin-top:70px; background-color:white;">
+            <md-list>
+              <md-list-item class="md-2-line" ng-repeat="line in $ctrl.lines | orderBy: '-speed'">
+                <md-icon class="md-avatar-icon">directions_bus</md-icon>
+                <div class="md-list-item-text">
+                  <h3> Linha: {{ line.number }} </h3>
+                  <p> Velocidade: {{ line.speed }}km/h </p>
+                </div>
+                <md-button class="md-secondary md-icon-button" ng-click="doSecondaryAction($event)" ng-if="phone.options.actionIcon" aria-label="call">
+                  <md-icon md-svg-icon="{{phone.options.actionIcon}}"></md-icon>
+                </md-button>
+              </md-list-item>
+            </md-list>
+          </md-content>
+          <div flex layout-align="center center" layout="column" ng-show="$ctrl.notFound">
+            <md-icon style="font-size:50px;margin:0px;height:50px;width:50px;">sentiment_dissatisfied</md-icon>
+            <span class="md-headline">Nenhum resultado encontrado</span>
+          </div>
+        </md-card-content>
       </md-card>
     </div>
   </div>
