@@ -92,6 +92,8 @@ function AppController(NgMap, data, $mdToast) {
         vm.linesCount = result.lines.map((val) => {
           return {number: val[0], count:val[1]}
         });
+        if (!vm.linesCount)
+          vm.notFound = true;
       }
 
       if (vm.filter.type === 'Average') {
